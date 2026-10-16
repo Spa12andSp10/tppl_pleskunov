@@ -2,28 +2,45 @@ import re
 
 class StackMachine():
 
+    """Реализация стэковой машины"""
+
     def __init__(self):
         self.stack = []
         self.result = []
 
     def add(self, op1: float, op2: float) -> None:
+
+        """Сложение двух операндов"""
+
         self.stack = self.stack[:-2]
         self.stack.append(op1 + op2)
 
     def sub(self, op1: float, op2: float) -> None:
+
+        """Разность двух операндов"""
+
         self.stack = self.stack[:-2]
         self.stack.append(op1 - op2)
 
     def mul(self, op1: float, op2: float) -> None:
+
+        """Умножение двух операндов"""
+
         self.stack = self.stack[:-2]
         self.stack.append(op1 * op2)
 
     def div(self, op1: float, op2: float) -> None:
+
+        """Деление двух операндов"""
+
         self.check_zero(op2)
         self.stack = self.stack[:-2]
         self.stack.append(op1 / op2)
 
     def tilda(self, op1: float, op2: float) -> None:
+
+        """Реализация специального оператора тильда (~)"""
+
         if op1 != 0 and op2 != 0:
             self.stack = self.stack[:-2]
             self.stack.append(abs(op1 - op2))
@@ -33,6 +50,9 @@ class StackMachine():
             self.stack.append(total)
 
     def calculate(self, string: str) -> tuple[list[str], float]:
+
+        """Реализация основного пересчета"""
+
         self.stack = []
         self.result = []
         count = 1
@@ -64,6 +84,9 @@ class StackMachine():
         return (self.result, self.stack[0])
 
     def check_incorrect_value(self, value: list) -> None:
+
+        """Проверка на неккоректное значение в строке"""
+
         operators = {"+", "-", "*", "/", "~"}
         for i in value:
             if i in operators:
@@ -74,21 +97,33 @@ class StackMachine():
                 raise ValueError("Некорректное значение в массиве!")
             
     def check_last_element(self, value: list) -> None:
+
+        """Проверка, что остался именно последний элемент в стэке"""
+
         if len(value) != 1:
             raise ArithmeticError("Остается не 1 число, проверте строку!")
 
     def check_two_operands_in_stack(self, value: list, token: str) -> None:
+
+        """Провекрка на то, что есть два операнда для применения операции"""
+
         if len(value) < 2:
             raise ValueError(
                 f"Недостаточно операндов для операции '{token}'!"
             )
 
     def check_empty_string(self, value: str) -> None:
+
+        """Проверка на пустоту строки"""
+
         if value == "":
             raise ValueError("Строка пустая!")
 
     
     def check_zero(self, op) -> None:
+
+        """Проверка на деление на ноль"""
+
         if op == 0:
             raise ZeroDivisionError("Деление на ноль!")
 
