@@ -1,4 +1,4 @@
-import re
+import sys
 
 class StackMachine():
 
@@ -127,47 +127,54 @@ class StackMachine():
         if op == 0:
             raise ZeroDivisionError("Деление на ноль!")
 
+def main() -> None: # pragma: no cover
+    if len(sys.argv) != 2:
+        print("Должно быть прописано так: python main.py \"2 3 +\"")
+        print("Или так для просмотра описания как работает данная программа: python main.py --description или python main.py -d")
+        print("Если у вас не работает python пропишите python3")
+        sys.exit(1)
+    if sys.argv[1] == "--description" or sys.argv[1] == "-d":
+        print("Стэковая Машина")
+        print("""
+        Принцип работы стековой машины
 
+        - Обрабатывает арифметические операции: `+`, `-`, `/`, `*`
+        - Обрабатывает специальный оператор `~`
+        - Операнды и операции разделены пробелами
+        - Операнды должны быть числами (целыми (как положительными, так и отрицательными) или дробными (с плавающей точкой)) или нулем
+        - Недопускается деление на 0
+        - Операции не могут в быть первым или вторым элементом
+        """)
+        print("""
+        Описание оператора `~`
 
+        Если оба операнда не равны 0: вычислить модуль разницы `|x - y|` и положить результат обратно в стек.
+        Если хотя бы один из операндов равен 0: вычисляет сумму всех значений в стеке, возводит её в квадрат и кладет результат обратно в стек
+        """)
 
-def main() -> None:
-    print("Стэковая Машина") # pragma: no cover
-    print("""
-    Принцип работы стековой машины
+        print("Чтобы увидеть результат в командной строке пропишите python имя_файла.py \"выражение\"")
+        sys.exit(1)
 
-    - Обрабатывает арифметические операции: `+`, `-`, `/`, `*`
-    - Обрабатывает специальный оператор `~`
-    - Операнды и операции разделены пробелами
-    - Операнды должны быть числами (целыми (как положительными, так и отрицательными) или дробными (с плавающей точкой)) или нулем
-    - Недопускается деление на 0
-    - Операции не могут в быть первым или вторым элементом
-    """) # pragma: no cover
-    print("""
-    Описание оператора `~`
+    string = " ".join(sys.argv[1:])
+    stack_machine = StackMachine()
 
-    Если оба операнда не равны 0: вычислить модуль разницы `|x - y|` и положить результат обратно в стек.
-    Если хотя бы один из операндов равен 0: вычисляет сумму всех значений в стеке, возводит её в квадрат и кладет результат обратно в стек
-    """) # pragma: no cover
-
-    stack_machine = StackMachine() # pragma: no cover
-    while True: # pragma: no cover
-        try: # pragma: no cover
-            string = input("Введите строку формата '2 3 +' : ") # pragma: no cover
-            result, last_element = stack_machine.calculate(string) # pragma: no cover
-            for step in result: # pragma: no cover
-                print(step) # pragma: no cover
-            print(f"Выражение {string} = {last_element}") # pragma: no cover
-            break # pragma: no cover
-        except ZeroDivisionError:
-            print("В строке происходит деление на ноль!") # pragma: no cover
-        except ValueError: # pragma: no cover
-            print("Кажется, у вас проблемы со строкой!") # pragma: no cover
-        except IndexError: # pragma: no cover
-            print("Кажется, в стеке недостаточно операндов!") # pragma: no cover
-        except ArithmeticError: # pragma: no cover
-            print("Остается не 1 число, проверьте строку!") # pragma: no cover
-        except Exception as e: # pragma: no cover
-            print(f"Непредвиденная ошибка: {e}") # pragma: no cover
+    try:
+        result, last_element = stack_machine.calculate(string)
+        for step in result:
+            print(step)
+        print(f"{string} = {last_element}")
+    except ZeroDivisionError:
+        print("В строке происходит деление на ноль!")
+        sys.exit(1)
+    except ValueError as e:
+        print(f"Ошибка: {e}")
+        sys.exit(1)
+    except ArithmeticError:
+        print("Остается не 1 число, проверьте строку!")
+        sys.exit(1)
+    except Exception as e:
+        print(f"Непредвиденная ошибка: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
