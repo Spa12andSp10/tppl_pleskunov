@@ -62,6 +62,12 @@ def test_tilda_both_nonzero(machine):
     # Проверки
     assert result == 7.0
 
+def test_power(machine):
+    # Действие
+    _, result = machine.calculate("10 3 !")
+    # Проверки
+    assert result == 1000.0
+
 
 def test_tilda_with_zero_squares_sum(machine):
     # Действие

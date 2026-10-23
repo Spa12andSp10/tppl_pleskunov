@@ -49,6 +49,13 @@ class StackMachine():
             self.stack = []
             self.stack.append(total)
 
+    def power(self, op1: float, op2: float) -> None:
+
+        """Реализация оператора !"""
+
+        self.stack = self.stack[:-2]
+        self.stack.append(op1 ** op2)
+
     def calculate(self, string: str) -> tuple[list[str], float]:
 
         """Реализация основного пересчета"""
@@ -61,7 +68,7 @@ class StackMachine():
         self.check_incorrect_value(value)
 
         for token in value:
-            if token in "+-*/~":
+            if token in "+-*/~!":
                 self.check_two_operands_in_stack(self.stack, token)
                 if token == "+":
                     self.add(self.stack[-2], self.stack[-1])
@@ -73,6 +80,9 @@ class StackMachine():
                     self.div(self.stack[-2], self.stack[-1])
                 elif token == "~":
                     self.tilda(self.stack[-2], self.stack[-1])
+                elif token == "!":
+                    self.power(self.stack[-2], self.stack[-1])
+
             else:
                 self.stack.append(float(token))
 
@@ -87,7 +97,7 @@ class StackMachine():
 
         """Проверка на неккоректное значение в строке"""
 
-        operators = {"+", "-", "*", "/", "~"}
+        operators = {"+", "-", "*", "/", "~", "!"}
         for i in value:
             if i in operators:
                 continue
@@ -138,7 +148,7 @@ def main() -> None: # pragma: no cover
         print("""
         Принцип работы стековой машины
 
-        - Обрабатывает арифметические операции: `+`, `-`, `/`, `*`
+        - Обрабатывает арифметические операции: `+`, `-`, `/`, `*`, `!`
         - Обрабатывает специальный оператор `~`
         - Операнды и операции разделены пробелами
         - Операнды должны быть числами (целыми (как положительными, так и отрицательными) или дробными (с плавающей точкой)) или нулем
