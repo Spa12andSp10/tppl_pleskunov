@@ -125,9 +125,9 @@ class Tokenizer:
                 elif c == "{":
                     cnt_b += 1
                 elif c == ")":
-                    cnt_p = 0
+                    cnt_p -= 1
                 elif c == "}":
-                    cnt_b = 0
+                    cnt_b -= 1
                 continue
 
             if c == "#":
