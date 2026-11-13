@@ -3,11 +3,14 @@ import os
 
 class Tokenizer:
 
+    """Токенизатор"""
+
     def __init__(self):
         self.result = []
         self.data = ""
 
     def numbers(self, value: str, pos: int, c: str):
+        """Распознование целых или вещественных чисел"""
         start = pos
         my_str = c
         is_float = False
@@ -28,6 +31,7 @@ class Tokenizer:
 
         return (token_type, pos, start, finish, my_str)
     def identifiers_or_keywords(self, value: str, pos: int, c: str):
+        """Распознование ключевых слов или индентификаторов"""
         keywords = {"if", "else", "while", "return", "for", "def"}
         start = pos
         my_str = c
@@ -40,26 +44,29 @@ class Tokenizer:
         return (token, pos, start, finish, my_str)
 
     def string_token(self, value: str, pos: int, c: str):
+        """Распознавание строк"""
         start = pos
         my_str = c
         pos += 1
         while pos < len(value) and value[pos] != '"':
             my_str += value[pos]
             pos += 1
-        if pos < len(value):
-            my_str += value[pos]
-            pos += 1
-        finish = pos
-        if pos == len(value) and value[pos - 1] != '"':
+        if pos >= len(value):
+            finish = pos
             return ("", pos, start, finish, my_str)
+        my_str += value[pos]
+        pos += 1
+        finish = pos
         return ("STRING", pos, start, finish, my_str)
 
     def comment(self, value: str, pos: int):
+        """Пропуск комментов"""
         while pos < len(value) and value[pos] != "\n":
             pos += 1
         return pos
 
     def load(self, filename: str):
+        """Загрузка файла"""
         if not os.path.exists(filename):
             raise FileNotFound(filename)
         with open(filename, "r", encoding="utf-8") as file:
@@ -68,6 +75,7 @@ class Tokenizer:
 
 
     def tokenizer(self, filename: str) -> list:
+        """Основная функция для токенизации. В ней дополнительно распознаются разделители и операции"""
         string = self.load(filename)
         if os.path.getsize(filename) == 0:
             raise FileIsEmpty(filename)
@@ -149,6 +157,7 @@ class Tokenizer:
         return self.result
 
 class LexicalError(Exception):
+    """Класс для распознования лексической ошибки"""
     def __init__(self, filename: str, line: int, col: int, char: str):
         self.filename = filename
         self.line = line
@@ -159,6 +168,7 @@ class LexicalError(Exception):
         )
 
 class UnclosedParenthesesOrQuotationMarks(Exception):
+    """Класс для распознования незакрытых скобок или кавычек (это считается ошибкой)"""
     def __init__(self, filename: str, line: int, col: int):
         self.filename = filename
         self.line = line
@@ -168,6 +178,7 @@ class UnclosedParenthesesOrQuotationMarks(Exception):
         )
 
 class IdentifierNotStartWithDigit(Exception):
+    """Класс, который выводит ошибку, если переменная начинается с цифры"""
     def __init__(self, filename: str, line: int, col: int):
         self.filename = filename
         self.line = line
@@ -177,6 +188,7 @@ class IdentifierNotStartWithDigit(Exception):
         )
 
 class FileNotFound(Exception):
+    """Класс ошибки ненайденного файла"""
     def __init__(self, filename: str):
         self.filename = filename
         super().__init__(
@@ -184,6 +196,7 @@ class FileNotFound(Exception):
         )
 
 class FileIsEmpty(Exception):
+    """Класс ошибки пустого файла"""
     def __init__(self, filename: str):
         self.filename = filename
         super().__init__(
